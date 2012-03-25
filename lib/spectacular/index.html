@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      if (!!window.EventSource) {
+        var source = new EventSource('/events.json');
+        source.addEventListener('message', function(e) {
+          alert(e.data);
+        }, false);
+      } else {
+        alert('your browser is not supported');
+      }
+    </script>
+  </head>
+  <body>
+    <h1>HELLO WORLD</h1>
+  </body>
+</html>

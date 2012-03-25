@@ -1,0 +1,7 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/spectacular
+lib/spectacular.rb
+test/test_spectacular.rb
