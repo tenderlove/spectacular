@@ -19,8 +19,10 @@ module Spectacular
       @list.each(&block)
     end
 
-    def last
-      @list.last
+    def last n = nil
+      return @list.last unless n
+
+      @list.last n
     end
 
     def length

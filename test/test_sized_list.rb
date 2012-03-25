@@ -24,5 +24,11 @@ module Spectacular
       list << Object.new
       assert_equal 10, list.length
     end
+
+    def test_last_param
+      list = SizedList.new 10
+      10.times { |i| list << i }
+      assert_equal [7, 8, 9], list.last(3)
+    end
   end
 end
