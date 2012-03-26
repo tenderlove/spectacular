@@ -1,4 +1,8 @@
 require 'webrick'
+require 'spectacular'
+require 'json'
+
+Thread.abort_on_exception = true
 
 module Spectacular
   module Server
@@ -22,9 +26,28 @@ module Spectacular
         response.body = rd
 
         Thread.new {
-          rw.write "retry: 100000\n"
-          rw.write "data: omg lol\n"
-          rw.close
+          begin
+            ip = ENV['ROUTER'] || '10.0.1.1'
+            dev = Spectacular::Device.new ip
+
+            rw.write "event: interfaces\n"
+            rw.write "data: #{JSON.dump(dev.interfaces)}\n\n"
+            rw.flush
+
+            dev.monitor do |row|
+              data = {
+                :interface => row[1].value.to_s,
+                :in_delta  => row[2].value,
+                :out_delta => row[3].value,
+              }
+
+              rw.write "event: update\n"
+              rw.write "data: #{JSON.dump(data)}\n\n"
+              rw.flush
+            end
+          ensure
+            rw.close
+          end
         }
       end
     end
@@ -32,7 +55,8 @@ module Spectacular
 end
 
 if $0 == __FILE__
-  server = WEBrick::HTTPServer.new :Port => 8080
+  server = WEBrick::HTTPServer.new :Port => 8080, :OutputBufferSize => 256
+
   server.mount '/',            Spectacular::Server::Index
   server.mount '/events.json', Spectacular::Server::Events
 

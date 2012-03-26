@@ -3,9 +3,8 @@ require 'spectacular/sized_list'
 module Spectacular
   class History
     def initialize size = 10
-      @size = 10
       @groups = Hash.new { |h,k|
-        h[k] = new_list
+        h[k] = new_list size
       }
     end
 
@@ -26,8 +25,8 @@ module Spectacular
     end
 
     private
-    def new_list
-      SizedList.new @size
+    def new_list size
+      SizedList.new size
     end
   end
 end

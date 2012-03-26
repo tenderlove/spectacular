@@ -1,18 +1,68 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
     <script>
-      if (!!window.EventSource) {
-        var source = new EventSource('/events.json');
-        source.addEventListener('message', function(e) {
-          alert(e.data);
-        }, false);
-      } else {
-        alert('your browser is not supported');
+      function options(interface) {
+        return { 'title': interface,
+          'width':1000,
+          'height':300,
+          'hAxis': { 'title': 'Time' },
+          'vAxis': { 'title': 'Data' } };
       }
+
+      function listen() {
+        var charts     = document.getElementById('interfaces');
+        var dataTables = {}
+        var gCharts    = {}
+
+        if (!!window.EventSource) {
+          var source = new EventSource('/events.json');
+          source.addEventListener('interfaces', function(e) {
+            var data = JSON.parse(e.data);
+            data.forEach(function(name) {
+              var chart = document.createElement('div');
+              chart.setAttribute('id', name);
+              charts.appendChild(chart);
+
+              var gchart = new google.visualization.LineChart(chart);
+              var table = new google.visualization.DataTable();
+              table.addColumn('string', 'time');
+              table.addColumn('number', 'input');
+              table.addColumn('number', 'output');
+
+              gCharts[name]    = gchart;
+              dataTables[name] = table;
+            });
+          }, false);
+
+          source.addEventListener('update', function(e) {
+            var data  = JSON.parse(e.data);
+            var chart = gCharts[data.interface];
+            var table = dataTables[data.interface];
+
+            if(chart && table) {
+              var count = table.getNumberOfRows();
+              table.addRow(['', data.in_delta, data.out_delta]);
+              if(count > 60) {
+                table.removeRow(0);
+              }
+              chart.draw(table, options(data.interface));
+            }
+          }, false);
+          } else {
+          alert('your browser is not supported');
+        }
+      }
+
+      google.load('visualization', '1.0', {'packages':['corechart']});
+      google.load("jquery", "1.7.1");
+      google.setOnLoadCallback(listen);
     </script>
   </head>
   <body>
-    <h1>HELLO WORLD</h1>
+    <div id="interfaces">
+    </div>
   </body>
 </html>
