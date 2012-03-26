@@ -67,17 +67,3 @@ module Spectacular
     end
   end
 end
-
-if __FILE__ == $0
-  dev = Spectacular::Device.new '10.0.1.1'
-  p dev.interfaces
-  dev.monitor do |row|
-    data = {
-      :name      => row[1].value.to_s,
-      :in_delta  => row[2].value,
-      :out_delta => row[3].value,
-    }
-
-    puts "data: #{JSON.dump(data)}\n"
-  end
-end
