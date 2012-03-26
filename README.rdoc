@@ -16,15 +16,15 @@ browser.
 == SYNOPSIS:
 
   $ gem install spectacular
-  FIX (code sample of usage)
+  $ spectacular ROUTER=10.0.1.1
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* A router with SNMP enabled
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* gem install spectacular
 
 == LICENSE:
 
