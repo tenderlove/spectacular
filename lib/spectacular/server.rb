@@ -2,8 +2,6 @@ require 'webrick'
 require 'spectacular'
 require 'json'
 
-Thread.abort_on_exception = true
-
 module Spectacular
   module Server
     dir = File.dirname __FILE__
@@ -52,14 +50,4 @@ module Spectacular
       end
     end
   end
-end
-
-if $0 == __FILE__
-  server = WEBrick::HTTPServer.new :Port => 8080, :OutputBufferSize => 256
-
-  server.mount '/',            Spectacular::Server::Index
-  server.mount '/events.json', Spectacular::Server::Events
-
-  trap('INT') { server.shutdown }
-  server.start
 end
