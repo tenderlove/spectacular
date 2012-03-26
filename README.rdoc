@@ -1,17 +1,21 @@
 = spectacular
 
-* FIX (url)
+* http://github.com/tenderlove/spectacular
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Spectacular is an SNMP client that displays traffic information in the
+browser.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+* It updates every second
+* I don't know what the units are on the Y axis yet
+* X axis is time
 
 == SYNOPSIS:
 
+  $ gem install spectacular
   FIX (code sample of usage)
 
 == REQUIREMENTS:
