@@ -1,3 +1,9 @@
+=== 1.1.0
+
+* 1 minor enhancement
+  * Now uses command a line argument instead of an environment variable for
+    the router IP
+
 === 1.0.0 / 2012-03-25
 
 * 1 major enhancement

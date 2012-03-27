@@ -16,9 +16,9 @@ browser.
 == SYNOPSIS:
 
   $ gem install spectacular
-  $ spectacular ROUTER=10.0.1.1
+  $ spectacular 10.0.1.1
 
-Open your browser and [click this link](http://localhost:8080).
+Open your browser and {click this link}[http://localhost:8080].
 
 == REQUIREMENTS:
 

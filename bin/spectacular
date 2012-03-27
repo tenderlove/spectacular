@@ -2,10 +2,14 @@
 
 require 'spectacular/server'
 
+router = ARGV.shift
+
+abort "usage:\n#{$0} router_ip" unless router
+
 server = WEBrick::HTTPServer.new :Port => 8080, :OutputBufferSize => 256
 
 server.mount '/',            Spectacular::Server::Index
-server.mount '/events.json', Spectacular::Server::Events
+server.mount '/events.json', Spectacular::Server::Events, router
 
 trap('INT') { server.shutdown }
 server.start

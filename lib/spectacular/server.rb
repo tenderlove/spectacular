@@ -16,6 +16,13 @@ module Spectacular
     end
 
     class Events < WEBrick::HTTPServlet::AbstractServlet
+
+      def initialize server, router
+        super server
+
+        @router = router
+      end
+
       def do_GET request, response
         response.status = 200
         response['Content-Type'] = 'text/event-stream'
@@ -25,8 +32,7 @@ module Spectacular
 
         Thread.new {
           begin
-            ip = ENV['ROUTER'] || '10.0.1.1'
-            dev = Spectacular::Device.new ip
+            dev = Spectacular::Device.new @router
 
             rw.write "event: interfaces\n"
             rw.write "data: #{JSON.dump(dev.interfaces)}\n\n"
