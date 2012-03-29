@@ -4,14 +4,21 @@ require 'json'
 
 module Spectacular
   module Server
-    dir = File.dirname __FILE__
-    INDEX = File.read File.expand_path File.join dir, 'index.html'
+    INDEX = File.read File.expand_path '../index.html', __FILE__
 
     class Index < WEBrick::HTTPServlet::AbstractServlet
+      def initialize server, name
+        super server
+
+        @name = name
+      end
+
       def do_GET request, response
+        body = INDEX % [@name]
+
         response.status = 200
         response['Content-Type'] = 'text/html'
-        response.body = INDEX
+        response.body = body
       end
     end
 
@@ -25,6 +32,7 @@ module Spectacular
 
       def do_GET request, response
         response.status = 200
+        response.chunked = true
         response['Content-Type'] = 'text/event-stream'
         rd, rw = IO.pipe
 

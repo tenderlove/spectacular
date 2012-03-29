@@ -6,9 +6,17 @@ router = ARGV.shift
 
 abort "usage:\n#{$0} router_ip" unless router
 
+name = '[unknown router]'
+
+SNMP::Manager.open :Host => router do |manager|
+  sys_name = manager.get(%w[sysName.0]).varbind_list.first.value
+
+  name = sys_name unless SNMP::NoSuchInstance == sys_name
+end
+
 server = WEBrick::HTTPServer.new :Port => 8080, :OutputBufferSize => 256
 
-server.mount '/',            Spectacular::Server::Index
+server.mount '/',            Spectacular::Server::Index,  name
 server.mount '/events.json', Spectacular::Server::Events, router
 
 trap('INT') { server.shutdown }
