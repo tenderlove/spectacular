@@ -6,9 +6,10 @@ module Spectacular
   class Device
     attr_reader :host, :history
 
-    def initialize host, history = 10
+    def initialize host, history = 10, interface_args
       @host    = host
       @history = new_history history
+      @interface_args = interface_args
     end
 
     def columns
@@ -17,11 +18,15 @@ module Spectacular
 
     def interfaces
       manager = snmp_manager host
-      interfaces = []
-      manager.walk(['ifDescr']) do |row|
-        interfaces << row.first.value.to_s
+      if @interface_args.empty?
+        interfaces = []
+        manager.walk(['ifDescr']) do |row|
+          interfaces << row.first.value.to_s
+        end
+        interfaces
+      else
+        @interface_args
       end
-      interfaces
     ensure
       manager.close
     end
