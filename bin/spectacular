@@ -3,8 +3,9 @@
 require 'spectacular/server'
 
 router = ARGV.shift
+interfaces = ARGV
 
-abort "usage:\n#{$0} router_ip" unless router
+abort "usage:\n#{$0} router_ip (interface_name)\noptionally supply one or more interface names to filter output" unless router
 
 name = '[unknown router]'
 
@@ -17,7 +18,7 @@ end
 server = WEBrick::HTTPServer.new :Port => 8080, :OutputBufferSize => 256
 
 server.mount '/',            Spectacular::Server::Index,  name
-server.mount '/events.json', Spectacular::Server::Events, router
+server.mount '/events.json', Spectacular::Server::Events, router, interfaces
 
 trap('INT') { server.shutdown }
 server.start
