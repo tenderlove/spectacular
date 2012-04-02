@@ -5,12 +5,13 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script>
-      function options(interface) {
-        return { 'title': interface,
-          'width':1000,
-          'height':300,
-          'hAxis': { 'title': 'Time' },
-          'vAxis': { 'title': 'Bytes' } };
+      function options(title) {
+        return {
+          'title':  title,
+          'width':  1000,
+          'height': 300,
+          'hAxis':  { 'title': 'Last Minute' },
+          'vAxis':  { 'title': 'Bytes' } };
       }
 
       function listen() {
@@ -49,10 +50,10 @@
               if(count > 60) {
                 table.removeRow(0);
               }
-              chart.draw(table, options(data.interface));
+              chart.draw(table, options(data.title));
             }
           }, false);
-          } else {
+        } else {
           alert('your browser is not supported');
         }
       }

@@ -6,15 +6,24 @@ module Spectacular
   class Device
     attr_reader :host, :history
 
+    COLUMNS = %w[
+      ifIndex
+
+      ifOperStatus
+
+      ifDescr
+      ifPhysAddress
+
+      ifInOctets
+      ifOutOctets
+    ]
+
     def initialize host, history = 10, interface_args
       @host    = host
       @history = new_history history
       @interface_args = interface_args
     end
 
-    def columns
-      ["ifIndex", "ifDescr", "ifInOctets", "ifOutOctets"]
-    end
 
     def interfaces
       manager = snmp_manager host
@@ -35,12 +44,23 @@ module Spectacular
       manager = snmp_manager host
 
       loop do
-        manager.walk(columns) do |row|
-          key = row[1].value.to_s
+        manager.walk(COLUMNS) do |row|
+          next if row[1].value == 2 # down
+
+          key = row[2].value.to_s
 
           result = diff history.last(key), row
 
-          yield result unless result.empty?
+          unless result.empty? then
+            event = {
+              :interface => key,
+              :title     => interface_name(key, row[3].value),
+              :in_delta  => result[2].value.to_i,
+              :out_delta => result[3].value.to_i,
+            }
+
+            yield event
+          end
 
           history.add key, row.map(&:dup)
         end
@@ -65,6 +85,15 @@ module Spectacular
         diff = right.value.to_i - left.value.to_i
         Klass.new left.name, diff
       }
+    end
+
+    def interface_name descr, address
+      mac = unless address.empty? then
+              address = address.unpack('H*').first
+              address.scan(/../).join ':'
+            end
+
+      [descr, mac].compact.join ' - '
     end
 
     def new_history size

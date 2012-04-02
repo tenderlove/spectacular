@@ -47,15 +47,9 @@ module Spectacular
             rw.write "data: #{JSON.dump(dev.interfaces)}\n\n"
             rw.flush
 
-            dev.monitor do |row|
-              data = {
-                :interface => row[1].value.to_s,
-                :in_delta  => row[2].value,
-                :out_delta => row[3].value,
-              }
-
+            dev.monitor do |event|
               rw.write "event: update\n"
-              rw.write "data: #{JSON.dump(data)}\n\n"
+              rw.write "data: #{JSON.dump(event)}\n\n"
               rw.flush
             end
           ensure
