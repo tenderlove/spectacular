@@ -1,6 +1,8 @@
 === 1.1.0
 
-* 1 minor enhancement
+* Minor enhancements
+  * Interfaces that are down are no longer shown
+  * The physical interface address is shown along with the interface name
   * Now uses command a line argument instead of an environment variable for
     the router IP
 
