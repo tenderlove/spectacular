@@ -24,7 +24,6 @@ module Spectacular
       @interface_args = interface_args
     end
 
-
     def interfaces
       manager = snmp_manager host
       if @interface_args.empty?
@@ -43,6 +42,7 @@ module Spectacular
     def monitor interval = 1
       manager = snmp_manager host
 
+      Thread.abort_on_exception = true
       loop do
         manager.walk(COLUMNS) do |row|
           next if row[1].value == 2 # down
@@ -81,9 +81,19 @@ module Spectacular
     def diff from, to
       return [] unless from && to
 
-      to.first(2) + from.zip(to).last(2).map { |left, right|
-        diff = right.value.to_i - left.value.to_i
-        Klass.new left.name, diff
+      to.first(2) + from.zip(to).last(2).map { |old, new|
+        name = new.name
+        new = new.value.to_i
+        old = old.value.to_i
+
+        # handle overflow of 32 bit counters
+        diff = if new >= old then
+                 new - old
+               else
+                 (2**32 - old - 1) + new
+               end
+
+        Klass.new name, diff
       }
     end
 

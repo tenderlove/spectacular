@@ -13,3 +13,4 @@ lib/spectacular/sized_list.rb
 test/helper.rb
 test/test_history.rb
 test/test_sized_list.rb
+test/test_spectacular_device.rb

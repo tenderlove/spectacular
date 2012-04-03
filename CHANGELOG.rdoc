@@ -5,6 +5,7 @@
   * The physical interface address is shown along with the interface name
   * Now uses command a line argument instead of an environment variable for
     the router IP
+  * Overflow of SNMP counters is now supported
 
 === 1.0.0 / 2012-03-25
 
